@@ -8,7 +8,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">ABC Admin</a>
+                <a class="navbar-brand" href="index.html">NURUM ADMIN</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -21,7 +21,8 @@
                         <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
                         </li>
                         <li class="divider"></li>
-                        <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        <li>
+							<a href="/Users/logout" onclick="if (confirm('¿Estás seguro de cerrar tu sesión?')) { return true; } return false;"><i class="fa fa-sign-out fa-fw"></i>Logout</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->

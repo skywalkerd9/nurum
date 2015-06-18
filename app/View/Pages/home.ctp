@@ -19,7 +19,7 @@
 		}
 		
 		function registerFb() {
-			var pass = document.getElementById("customer-pass").value;
+			var pass = document.getElementById("user-pass").value;
 
 			if (pass == "") {
 				$(function() {
@@ -65,7 +65,7 @@
 		function testAPI() {
 			FB.api('/me', function(response) {
 				$(function() {
-					var url = '/Users/addUser';
+					var url = '/Users/register';
 					var pass = $('#user-pass').val();
 					var email = response.email;
 					var name = response.name;
@@ -95,10 +95,32 @@
 			});
 		}
 		
-		function loginAPI() {
-			console.log('Welcome!  Fetching your information.... ');
+		function loginAPI() {			
 			FB.api('/me', function(response) {
-			  console.log('Successful login for: ' + response);			 
+			  $(function() {
+					var url = '/Users/login';					
+					var email = response.email;					
+					var formData = new FormData();					
+					formData.append('data[User][email]', email);
+
+					$.ajax({
+						type: "POST",
+						dataType: 'json',
+						contentType: false,
+						processData: false,
+						url: url,
+						data: formData,
+						success: function(data) {
+							if (data['response'] == 'ok') {
+								document.location.href = data['redirect'];
+							}else{
+								alert(data['response']);
+							}
+						}
+					});
+
+					return false;
+			  });
 			});
 		}
 </script>
@@ -181,7 +203,7 @@
 					<div class="form-group">
 						<label for="password" class="col-md-3 control-label">Password</label>
 						<div class="col-md-9">
-							<input type="password" class="form-control" name="password" placeholder="Password">
+							<input type="password" id="user-pass" class="form-control" name="password" placeholder="Password">
 						</div>
 					</div>
 					

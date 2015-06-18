@@ -45,19 +45,48 @@ class UsersController extends AppController {
  */
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('register');
+		$this->Auth->allow('login','register');
 	}
 	
 	
 	public function login(){
-		
+		if ($this->request->is('post')) {			
+			$user = $this->User->find('first', array(
+				'conditions' => array('User.username' => $this->data['User']['email'])
+			));
+			
+			if (!empty($user)) {
+				if ($this->Auth->login($user)) {
+				   echo json_encode(array('response' => "ok", 'redirect' => $this->Auth->redirectUrl()));
+				   die();
+				}else{
+					echo json_encode(array('response' => "Error al inicar sesión. Verífica tus datos."));
+					die();
+				}			
+			}else{
+				echo json_encode(array('response' => "Aun no estas registrado en nuestra aplicación. Registrate Ahora!"));
+				die();	
+			}			
+		}
 	}
 	
 	public function logout(){
-		
+		 $this->Session->destroy();
+		 return $this->redirect($this->Auth->logout());
 	}
 
 	public function register(){
-		
+		 if ($this->User->save($this->request->data)) {
+			$id = $this->User->id;
+			$this->request->data['User'] = array_merge(
+				$this->request->data['User'],
+				array('id' => $id)
+			);
+			
+			unset($this->request->data['User']['password']);
+			$this->Auth->login($this->request->data['User']);
+			
+			echo json_encode(array('response' => "ok", 'redirect' => $this->Auth->redirectUrl()));
+		}
 	}
 }
