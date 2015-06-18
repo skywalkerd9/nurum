@@ -120,15 +120,20 @@ class UsersController extends AppController {
 				unset($this->request->data['User']['password']);
 				$this->Auth->login($this->request->data['User']);
 
-				echo json_encode(array('response' => "ok", 'message' => "Gracias por registrarte con NURUM-ADMIN!", 'redirect' => $this->Auth->redirectUrl()));
+				echo json_encode(array('response' => "ok", 'message' => "Gracias por registrarte con NURUM-ADMIN!",  'redirect' => $this->Auth->redirectUrl()));
 				die();
 			}
 		}
 	}
 	
 	public function profile($id=null){
-		if ($this->request->is('post')) {
+		if ($this->request->is('post')) {			
+			$user = $this->User->find('first',array(
+				'conditions' => array('User.id' => $this->Session->read('userid'))
+			));
 			
+			$this->set(compact('user'));
+			$this->render('/Elements/admin/users/profile', 'ajax');
 		}
 	}
 	

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-06-2015 a las 23:01:52
+-- Tiempo de generación: 18-06-2015 a las 23:55:42
 -- Versión del servidor: 5.6.16
 -- Versión de PHP: 5.5.11
 
@@ -64,10 +64,7 @@ CREATE TABLE IF NOT EXISTS `records` (
 --
 
 INSERT INTO `records` (`id`, `record`, `user_id`, `created`, `modified`) VALUES
-('5583185e-522c-4e2f-b6f7-0d0cf8851959', 2147483647, '5582f244-1170-430f-9c8f-0d0cf8851959', '2015-06-18 21:13:34', '2015-06-18 21:13:34'),
-('55832a74-4fa8-409e-8788-0d0cf8851959', 2147483647, '5582f244-1170-430f-9c8f-0d0cf8851959', '2015-06-18 22:30:44', '2015-06-18 22:30:44'),
-('55832ab8-2ee0-45cd-959a-0d0cf8851959', 2147483647, '5582f244-1170-430f-9c8f-0d0cf8851959', '2015-06-18 22:31:52', '2015-06-18 22:31:52'),
-('55832cf5-9710-476b-a696-0d0cf8851959', 21312123, '5582f244-1170-430f-9c8f-0d0cf8851959', '2015-06-18 22:41:25', '2015-06-18 22:41:25');
+('55832a74-4fa8-409e-8788-0d0cf8851959', 2147483647, '5582f244-1170-430f-9c8f-0d0cf8851959', '2015-06-18 22:30:44', '2015-06-18 22:30:44');
 
 -- --------------------------------------------------------
 
@@ -87,6 +84,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email_verified` int(1) DEFAULT '0',
   `active` int(1) NOT NULL DEFAULT '0',
   `ip_address` varchar(50) DEFAULT NULL,
+  `fbid` varchar(100) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -99,11 +97,13 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Volcado de datos para la tabla `users`
 --
 
-INSERT INTO `users` (`id`, `user_group_id`, `username`, `password`, `salt`, `email`, `first_name`, `last_name`, `email_verified`, `active`, `ip_address`, `created`, `modified`) VALUES
-('1', 1, 'admin', '365caef7fccbdb1ee711f084be9317a7', '1e6d99570a4d37cc29b18c4a6b06e6ed', 'admin@admin.com', 'Admin', '', 1, 1, '', '2015-06-11 12:07:04', '2015-06-11 12:07:04'),
-('2', 2, 'skywalker_d999@hotmail.com', 'edf1fe78dfa694311c51a1d6582045b4', '6ef15624ce4b885ca8b952e7c88d7921', 'skywalker_d9@hotmail.com', 'David', 'Martinez', 1, 1, NULL, '2015-06-11 13:14:17', '2015-06-11 13:14:17'),
-('5582ef7b-0f38-42f9-9156-0d0cf8851959', 2, 'skywalker_d99999@hotmail.com', '7950a0f40c0972b3f3e94f072a362e7d9cb11bd8', NULL, 'skywalker_d9@hotmail.com', 'David Martinez', NULL, 1, 1, NULL, '2015-06-18 18:19:07', '2015-06-18 18:19:07'),
-('5582f244-1170-430f-9c8f-0d0cf8851959', 2, 'skywalker_d9@hotmail.com', '5138d8e581005dcbad99c6d9f47f7de8401aa99e', '18934f19dca36bd120a9dc384cf6f946', 'skywalker_d9@hotmail.com', 'David Martinez', NULL, 1, 1, NULL, '2015-06-18 18:31:00', '2015-06-18 18:31:00');
+INSERT INTO `users` (`id`, `user_group_id`, `username`, `password`, `salt`, `email`, `first_name`, `last_name`, `email_verified`, `active`, `ip_address`, `fbid`, `created`, `modified`) VALUES
+('1', 1, 'admin', '365caef7fccbdb1ee711f084be9317a7', '1e6d99570a4d37cc29b18c4a6b06e6ed', 'admin@admin.com', 'Admin', '', 1, 1, '', NULL, '2015-06-11 12:07:04', '2015-06-11 12:07:04'),
+('2', 2, 'skywalker_d999@hotmail.com', 'edf1fe78dfa694311c51a1d6582045b4', '6ef15624ce4b885ca8b952e7c88d7921', 'skywalker_d9@hotmail.com', 'David', 'Martinez', 1, 1, NULL, NULL, '2015-06-11 13:14:17', '2015-06-11 13:14:17'),
+('5582ef7b-0f38-42f9-9156-0d0cf8851959', 2, 'skywalker_d99999@hotmail.com', '7950a0f40c0972b3f3e94f072a362e7d9cb11bd8', NULL, 'skywalker_d9@hotmail.com', 'David Martinez', NULL, 1, 1, NULL, NULL, '2015-06-18 18:19:07', '2015-06-18 18:19:07'),
+('5582f244-1170-430f-9c8f-0d0cf8851959', 2, 'skywalker_d99@hotmail.com', '5138d8e581005dcbad99c6d9f47f7de8401aa99e', '18934f19dca36bd120a9dc384cf6f946', 'skywalker_d9@hotmail.com', 'David Martinez', NULL, 1, 1, NULL, '758563657598474', '2015-06-18 18:31:00', '2015-06-18 18:31:00'),
+('55833db1-04e8-4261-8c52-0d0cf8851959', 2, 'skywalker_d93@hotmail.com', 'b92b1ea26b56869443323bf8127352f520147d22', '11f7f26cefb671a1dcff34c151f355bc', 'skywalker_d93@hotmail.com', 'David Martinez', NULL, 1, 1, NULL, 'skywalker_d9@hotmail.com', '2015-06-18 23:52:49', '2015-06-18 23:52:49'),
+('55833e15-cf88-4898-8ca6-0d0cf8851959', 2, 'skywalker_d9@hotmail.com', '5138d8e581005dcbad99c6d9f47f7de8401aa99e', '367a65e37d152e0b442ac75b90946b21', 'skywalker_d9@hotmail.com', 'David Martinez', NULL, 1, 1, NULL, '758563657598474', '2015-06-18 23:54:29', '2015-06-18 23:54:29');
 
 -- --------------------------------------------------------
 

@@ -46,7 +46,7 @@ class AppController extends Controller {
 				'admin' => false),
 			'loginRedirect' => array(
 				'controller' => 'pages',
-				'action' => 'index',
+				'action' => 'admin_index',
 				'admin' => true),
 			'autoRedirect' => true),
 		'RequestHandler'

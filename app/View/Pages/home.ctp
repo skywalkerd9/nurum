@@ -55,12 +55,12 @@
 		 
 		//Login de Facebook 
 		function loginAPI() {			
-			FB.api('/me', function(response) {
+			FB.api('/me', function(response) {				
 			  $(function() {
 					var url = '/Users/login';					
 					var email = response.email;					
 					var formData = new FormData();					
-					formData.append('data[User][email]', email);
+					formData.append('data[User][email]', email);					
 
 					$.ajax({
 						type: "POST",
@@ -93,10 +93,12 @@
 					var pass = $('#user-pass').val();
 					var email = response.email;
 					var name = response.name;
+					var fb = response.id;
 					var formData = new FormData();
 					formData.append('data[User][name]', name);
 					formData.append('data[User][email]', email);
 					formData.append('data[User][password]', pass);
+					formData.append('data[User][fbid]', fb);
 
 					$.ajax({
 						type: "POST",

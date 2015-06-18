@@ -28,13 +28,28 @@
 						processData: false,
 						url: url,
 						success: function(data) {
-							$('.main').html(data);							
+							$('#main').html(data);							
 						}
 					});
 					
 					break;
 			}					
 
+			return false;
+		});
+		
+		$('.profile').click(function(){
+			var url = $(this).attr("href");
+			
+			$.ajax({
+				type: "POST",
+				url: url,
+				success: function(data) {
+					$('.dropdown-user').delay(3000).click();
+					$('#main').html(data);
+				}					
+			});
+			
 			return false;
 		});
 		
@@ -79,7 +94,7 @@
 			return false;
 		});
 		
-		$('.delete-record').click(function(event){
+		$('#main').on('click','a.delete-record',function(event){		
 			event.preventDefault();
 			
 			var url = $(this).attr("href");
@@ -122,7 +137,7 @@
                         <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a href="<?php echo $this->Html->url(array('controller' => "Users", 'action' => "profile",$this->Session->read('userid'), 'admin' => false));?>"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        <li><a href="<?php echo $this->Html->url(array('controller' => "Users", 'action' => "profile",$this->Session->read('userid'), 'admin' => false));?>" class="profile"><i class="fa fa-user fa-fw"></i> User Profile</a>
                         </li>
                         <li class="divider"></li>
                         <li>
@@ -194,10 +209,3 @@
 		</div>
 	</div>
 	<!-- /#modal-Add -->
-<script>
-	$(document).ready(function() {
-        $('#dataTables-example').DataTable({
-                responsive: true
-        });
-    });
-</script>
