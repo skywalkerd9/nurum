@@ -1,3 +1,85 @@
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.submenu').click(function(event) {
+			event.preventDefault();
+
+			var i = $(this).parent().index();			
+			var option = $(this).text();
+			var url = $(this).attr('href');
+			
+			switch (option) {
+				case 'Add Record':
+					$.ajax({
+						type: "POST",
+						contentType: false,
+						processData: false,
+						url: url,
+						success: function(data) {
+							$('.body-record').html(data);
+							$('#myModalRecord').modal('show');
+						}
+					});
+					
+					break;
+				case 'List Records':
+					$.ajax({
+						type: "POST",
+						contentType: false,
+						processData: false,
+						url: url,
+						success: function(data) {
+							$('.main').html(data);							
+						}
+					});
+					
+					break;
+			}					
+
+			return false;
+		});
+		
+		$('.add-record').click(function(event){
+			event.preventDefault();
+			
+			var form = $('#addRecord').serialize();
+			var url = $('#addRecord').attr('action');			
+			var expreg = /^[0-9\.]+$/;
+			var record = $('.record').val();
+
+			if(!expreg.test(record)){
+				$('.help-block').hide();
+				$('.error-block').text('Solo registros númericos para este campo.');
+				return false;
+			}
+			
+			$('.help-block').show();
+			$('.error-block').hide();
+			
+			$.ajax({
+				type: "POST",
+				dataType: 'json',
+				url: url,
+				data: form,
+				success: function(data) {
+					if(data['response'] == 'Correcto'){
+						alert(data['message']);
+						$('#myModalRecord').modal('hide');
+						location.reload();
+					}if(data['response'] == 'Existe'){
+						alert(data['message']);
+						document.getElementById("addRecord").reset();
+					}else{
+						alert(data['response']);
+						$('#myModalRecord').modal('hide');
+						document.getElementById("addRecord").reset();
+					}
+				}
+			});
+			
+			return false;
+		});
+	});
+</script>
 <div id="wrapper">
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
@@ -35,16 +117,16 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li>
-                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Home</a>
+                            <a href="<?php echo $this->Html->url();?>"><i class="fa fa-dashboard fa-fw"></i> Home</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-fw"></i> Records<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-edit fa-fw"></i> Records<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
 								<li>
-                                    <a href="buttons.html">Add Record</a>
+                                    <a href="<?php echo $this->Html->url(array('controller' => "Records", 'action' => "addRecord",'admin' => false));?>" class="submenu">Add Record</a>
                                 </li>
                                 <li>
-                                    <a href="panels-wells.html">List Records</a>
+                                    <a href="<?php echo $this->Html->url(array('controller' => "Records", 'action' => "listRecords",'admin' => false));?>" class="submenu">List Records</a>
                                 </li>                                                              
                             </ul>
                             <!-- /.nav-second-level -->
@@ -64,13 +146,32 @@
                 <!-- /.col-lg-12 -->
 			</div>
 			<div id="main" class="row">
-				<?php echo $this->element('admin/list-records')?>
+				<?php echo $this->element('admin/records/list-records')?>
             </div>           
         </div>
         <!-- /#page-wrapper -->
     </div>
     <!-- /#wrapper -->
 	
+	<!-- modal-Add -->
+	<div class="modal fade" id="myModalRecord" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">Alta de Registros</h4>
+				</div>
+				<div class="modal-body body-record">
+					
+				</div>
+				<div class="modal-footer">					
+					<button type="reset" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+					<button type="submit" class="btn btn-default add-record">Agregar Registro</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /#modal-Add -->
 <script>
 	$(document).ready(function() {
         $('#dataTables-example').DataTable({

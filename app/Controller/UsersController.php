@@ -79,6 +79,7 @@ class UsersController extends AppController {
 				
 				
 				if ($this->Auth->login($user)) {
+				   $this->Session->write('userid',$user['User']['id']);
 				   echo json_encode(array('response' => "ok", 'redirect' => $this->Auth->redirectUrl()));
 				   die();
 				}else{

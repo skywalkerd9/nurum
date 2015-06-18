@@ -35,7 +35,7 @@ class PagesController extends AppController {
  *
  * @var array
  */
-	public $uses = array();
+	public $uses = array('User','Record');
 	
 /**
  * Components
@@ -91,7 +91,11 @@ class PagesController extends AppController {
 		}
 	}
 	
-	public function admin_index(){
+	public function admin_index(){		
+		$records = $this->User->find('all', array(
+			'conditions' => array('User.id' => $this->Session->read('userid'))
+		));
 		
+		$this->set(compact('records'));
 	}
 }
