@@ -62,15 +62,7 @@ class UsersController extends AppController {
 					
 					$check_user = $this->User->find('first', array('conditions' => array('AND' => array('username' => $this->data['User']['email'], 'password' => AuthComponent::password($this->data['User']['password']), 'active' => 1))));	
 					
-					if(empty($check_user)){
-						
-						switch ($try){
-							case 3:
-								break;
-							case 10:
-								break;
-						}
-						
+					if(empty($check_user)){																		
 						echo json_encode(array('response' => "Error al inicar sesión. Verífica tus datos."));
 						die();
 					}
@@ -99,36 +91,44 @@ class UsersController extends AppController {
 	}
 
 	public function register(){
-		$user = $this->User->find('first', array(
-				'conditions' => array('User.username' => $this->data['User']['email'])
-		));
-		
-		if (!empty($user)) {
-			echo json_encode(array('response' => "Ya te encuentras registrado con nosotros. Inicia sesión con tu cuenta ".$this->data['User']['email']));
-			die();
-		} 
-		
-		$this->request->data['User']['username'] = $this->request->data['User']['email'];
-		$this->request->data['User']['first_name'] = $this->request->data['User']['name'];;
-		$this->request->data['User']['user_group_id'] = 2;
-		$this->request->data['User']['remember'] = 1;
-		$this->request->data['User']['email_verified'] = 1;
-		$this->request->data['User']['active'] = 1;
-		$this->request->data['User']['salt'] = $this->makeSalt();;
-		$this->request->data['User']['password'] = AuthComponent::password($this->request->data['User']['password']);		
-		
-		 if ($this->User->save($this->request->data)) {
-			$id = $this->User->id;
-			$this->request->data['User'] = array_merge(
-				$this->request->data['User'],
-				array('id' => $id)
-			);
+		if ($this->request->is('post')) {
+			$user = $this->User->find('first', array(
+					'conditions' => array('User.username' => $this->data['User']['email'])
+			));
+
+			if (!empty($user)) {
+				echo json_encode(array('response' => "Ya te encuentras registrado con nosotros. Inicia sesión con tu cuenta ".$this->data['User']['email']));
+				die();
+			} 
+
+			$this->request->data['User']['username'] = $this->request->data['User']['email'];
+			$this->request->data['User']['first_name'] = $this->request->data['User']['name'];;
+			$this->request->data['User']['user_group_id'] = 2;
+			$this->request->data['User']['remember'] = 1;
+			$this->request->data['User']['email_verified'] = 1;
+			$this->request->data['User']['active'] = 1;
+			$this->request->data['User']['salt'] = $this->makeSalt();;
+			$this->request->data['User']['password'] = AuthComponent::password($this->request->data['User']['password']);		
+
+			 if ($this->User->save($this->request->data)) {
+				$id = $this->User->id;
+				$this->request->data['User'] = array_merge(
+					$this->request->data['User'],
+					array('id' => $id)
+				);
+
+				unset($this->request->data['User']['password']);
+				$this->Auth->login($this->request->data['User']);
+
+				echo json_encode(array('response' => "ok", 'message' => "Gracias por registrarte con NURUM-ADMIN!", 'redirect' => $this->Auth->redirectUrl()));
+				die();
+			}
+		}
+	}
+	
+	public function profile($id=null){
+		if ($this->request->is('post')) {
 			
-			unset($this->request->data['User']['password']);
-			$this->Auth->login($this->request->data['User']);
-			
-			echo json_encode(array('response' => "ok", 'message' => "Gracias por registrarte con NURUM-ADMIN!", 'redirect' => $this->Auth->redirectUrl()));
-			die();
 		}
 	}
 	

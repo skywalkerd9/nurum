@@ -136,8 +136,8 @@
 					url: url,
 					data: form,
 					success: function(data) {
-						if(data['message'] == 'Ok'){
-							location.reload();						
+						if(data['response'] == 'ok'){
+							document.location.href = data['redirect'];					
 						}else{
 							alert(data['response']);
 							$('#login-password').val("");
@@ -203,7 +203,7 @@
 			</div>  
 			<div class="panel-body" >
 				<form id="signupform" method="post" action="<?php echo $this->Html->url(array('controller' => 'Users', 'action' => 'register'));?>" class="form-horizontal" role="form">						
-					<div id="signupalert" style="display:none" class="alert alert-danger">
+					<!--<div id="signupalert" style="display:none" class="alert alert-danger">
 						<p>Error:</p>
 						<span></span>
 					</div>
@@ -226,7 +226,7 @@
 						<div class="col-md-9">
 							<input type="text" class="form-control" name="lastname" placeholder="Last Name">
 						</div>
-					</div>
+					</div>-->
 					
 					<div class="form-group">
 						<label for="password" class="col-md-3 control-label">Password</label>
@@ -235,18 +235,16 @@
 						</div>
 					</div>
 					
-					<div class="form-group">
+					<!--<div class="form-group">
 						<label for="password" class="col-md-3 control-label">Confirm Password</label>
 						<div class="col-md-9">
 							<input type="password" class="form-control" name="passwordc" placeholder="Password">
 						</div>
-					</div>
+					</div>-->
 
 					<div class="form-group">
 						<!-- Button -->                                        
-						<div class="col-md-offset-3 col-md-9">
-							<button id="btn-signup" type="button" class="btn btn-info"><i class="icon-hand-right"></i> &nbsp Sign Up</button>
-							<span style="margin-left:8px;margin-right:8px;">or</span>  
+						<div class="col-md-offset-3 col-md-9">							
 							<button id="btn-fbsignup" type="button" class="btn btn-primary" onclick="verifiedFb('register');"><i class="icon-facebook"></i>   Sign Up with Facebook</button>
 						</div>   
 					</div>                                                                                                
