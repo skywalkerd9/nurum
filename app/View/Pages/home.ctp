@@ -1,13 +1,116 @@
+<script type="text/javascript">
+	// Invoking the Login Dialog with the JavaScript SDK
+		function loginFb() {
+			FB.login(function(response) {
+				if (response.status === 'connected') {
+					// Logged into your app and Facebook.
+					loginAPI();
+				} else if (response.status === 'not_authorized') {
+					// The person is logged into Facebook, but not your app.
+					alert('Please log into this app.');
+					location.reload();
+				} else {
+					// The person is not logged into Facebook, so we're not sure if
+					// they are logged into this app or not.
+					alert('Please log into Facebook.');
+					location.reload();
+				}
+			}, {scope: 'public_profile,email'});
+		}
+		
+		function registerFb() {
+			var pass = document.getElementById("customer-pass").value;
+
+			if (pass == "") {
+				$(function() {
+					alert('Porporciónanos el password con el que ingresaras al panel del Administrador Nurum.');										
+				});
+				return false;
+			}
+
+			FB.login(function(response) {
+				if (response.status === 'connected') {
+					// Logged into your app and Facebook.
+					testAPI();
+				} else if (response.status === 'not_authorized') {
+					// The person is logged into Facebook, but not your app.
+					console.log('Please log into this app.');
+				} else {
+					// The person is not logged into Facebook, so we're not sure if
+					// they are logged into this app or not.
+					console.log('Please log into Facebook.');
+				}
+			}, {scope: 'public_profile,email'});
+		}
+		
+
+		window.fbAsyncInit = function() {
+		  FB.init({
+			appId      : '938196706223260',
+			xfbml      : true,
+			cookie     : true,
+            xfbml      : true,
+			version    : 'v2.3'
+		  });
+		};
+
+		(function(d, s, id){
+		   var js, fjs = d.getElementsByTagName(s)[0];
+		   if (d.getElementById(id)) {return;}
+		   js = d.createElement(s); js.id = id;
+		   js.src = "//connect.facebook.net/en_US/sdk.js";
+		   fjs.parentNode.insertBefore(js, fjs);
+		 }(document, 'script', 'facebook-jssdk'));
+
+		function testAPI() {
+			FB.api('/me', function(response) {
+				$(function() {
+					var url = '/Users/addUser';
+					var pass = $('#user-pass').val();
+					var email = response.email;
+					var name = response.name;
+					var formData = new FormData();
+					formData.append('data[User][name]', name);
+					formData.append('data[User][email]', email);
+					formData.append('data[User][password]', pass);
+
+					$.ajax({
+						type: "POST",
+						dataType: 'json',
+						contentType: false,
+						processData: false,
+						url: url,
+						data: formData,
+						success: function(data) {
+							if (data['response'] == 'ok') {
+								alert(data['message']);
+							}else{
+								alert(data['response']);
+							}
+						}
+					});
+
+					return false;
+				});
+			});
+		}
+		
+		function loginAPI() {
+			console.log('Welcome!  Fetching your information.... ');
+			FB.api('/me', function(response) {
+			  console.log('Successful login for: ' + response);			 
+			});
+		}
+</script>
 <div class="container">    
 	<div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
 		<div class="panel panel-info" >
 			<div class="panel-heading">
-				<div class="panel-title">ABC Login</div>
-				<div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#">Forgot password?</a></div>
+				<div class="panel-title">Nurum Login</div>				
 			</div>     
 			<div style="padding-top:30px" class="panel-body" >
 				<div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
-					<form id="loginform" class="form-horizontal" role="form">
+				<form id="loginform" method="post" action="<?php echo $this->Html->url(array('controller' => 'Users', 'action' => 'login'));?>" class="form-horizontal" role="form">
 								
 						<div style="margin-bottom: 25px" class="input-group">
 							<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
@@ -17,20 +120,14 @@
 						<div style="margin-bottom: 25px" class="input-group">
 							<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
 							<input id="login-password" type="password" class="form-control" name="password" placeholder="password">
-						</div>                                    
-							
-						<div class="input-group">
-						  <div class="checkbox">
-							<label>
-							  <input id="login-remember" type="checkbox" name="remember" value="1"> Remember me
-							</label>
-						  </div>
-						</div>
+						</div>                                    					
 						
 						<div style="margin-top:10px" class="form-group">
 							<!-- Button -->
 							<div class="col-sm-12 controls">
-							  <a id="btn-login" href="#" class="btn btn-success">Login  </a>								  
+							  <a id="btn-login" href="#" class="btn btn-success">Login  </a>
+							  <span style="margin-left:8px;margin-right:8px;">or</span>  
+							<button id="btn-fblogin" type="button" class="btn btn-primary" onclick="loginFb();"><i class="icon-facebook"></i>   Login with Facebook</button>
 							</div>
 						</div>
 						
@@ -55,7 +152,7 @@
 				<div style="float:right; font-size: 85%; position: relative; top:-10px"><a id="signinlink" href="#" onclick="$('#signupbox').hide(); $('#loginbox').show()">Sign In</a></div>
 			</div>  
 			<div class="panel-body" >
-				<form id="signupform" class="form-horizontal" role="form">						
+				<form id="signupform" method="post" action="<?php echo $this->Html->url(array('controller' => 'Users', 'action' => 'register'));?>" class="form-horizontal" role="form">						
 					<div id="signupalert" style="display:none" class="alert alert-danger">
 						<p>Error:</p>
 						<span></span>
@@ -100,7 +197,7 @@
 						<div class="col-md-offset-3 col-md-9">
 							<button id="btn-signup" type="button" class="btn btn-info"><i class="icon-hand-right"></i> &nbsp Sign Up</button>
 							<span style="margin-left:8px;margin-right:8px;">or</span>  
-							<button id="btn-fbsignup" type="button" class="btn btn-primary"><i class="icon-facebook"></i>   Sign Up with Facebook</button>
+							<button id="btn-fbsignup" type="button" class="btn btn-primary" onclick="registerFb();"><i class="icon-facebook"></i>   Sign Up with Facebook</button>
 						</div>   
 					</div>                                                                                                
 				</form>
