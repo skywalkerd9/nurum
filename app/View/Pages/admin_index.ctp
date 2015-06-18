@@ -65,13 +65,35 @@
 						alert(data['message']);
 						$('#myModalRecord').modal('hide');
 						location.reload();
-					}if(data['response'] == 'Existe'){
+					}else if(data['response'] == 'Existe'){
 						alert(data['message']);
 						document.getElementById("addRecord").reset();
 					}else{
 						alert(data['response']);
 						$('#myModalRecord').modal('hide');
 						document.getElementById("addRecord").reset();
+					}
+				}
+			});
+			
+			return false;
+		});
+		
+		$('.delete-record').click(function(event){
+			event.preventDefault();
+			
+			var url = $(this).attr("href");
+			
+			$.ajax({
+				type: "POST",
+				dataType: 'json',
+				url: url,				
+				success: function(data) {
+					if(data['response'] == 'ok'){
+						alert(data['message']);						
+						location.reload();	
+					}else{
+						alert(data['response']);						
 					}
 				}
 			});

@@ -92,9 +92,9 @@ class PagesController extends AppController {
 	}
 	
 	public function admin_index(){		
-		$records = $this->User->find('all', array(
-			'conditions' => array('User.id' => $this->Session->read('userid'))
-		));
+		$records = $this->Record->find('all',array(
+				'order' => array('Record.created')
+			));
 		
 		$this->set(compact('records'));
 	}

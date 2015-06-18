@@ -1,4 +1,3 @@
-<?php $list = $records[0]['Record'];?>
 <div class="col-lg-12">
 	<h2>Listado de Registros Creados</h2>
 	<table class="table table-striped table-bordered table-hover" id="dataTables-example">
@@ -12,13 +11,13 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php $i=1; foreach ($list as $key=>$value):?>
+			<?php $i=1; foreach ($records as $key=>$value):?>
 			<tr class="odd gradeX">
 				<td style="text-align: center;"><?php echo $i;?></td>
-				<td><?php echo $records[0]['User']['first_name'];?></td>
-				<td style="text-align: center;"><?php echo $list[$key]['record'];?></td>
-				<td style="text-align: center;"><?php echo $list[$key]['created'];?></td>
-				<td style="text-align: center;"><a href="<?php echo $this->Html->url(array('controller' => "Records", 'action' => "deleteRecord", $list[$key]['id'],'admin' => false));?>">X</a></td>
+				<td><?php echo $records[$key]['User']['first_name'];?></td>
+				<td style="text-align: center;"><?php echo $records[$key]['Record']['record'];?></td>
+				<td style="text-align: center;"><?php echo $records[$key]['Record']['created'];?></td>
+				<td style="text-align: center;"><a href="<?php echo $this->Html->url(array('controller' => "Records", 'action' => "deleteRecord", $records[$key]['Record']['id'],'admin' => false));?>" class="delete-record">X</a></td>
 			</tr>			
 			<?php $i++; endforeach;?>
 		</tbody>

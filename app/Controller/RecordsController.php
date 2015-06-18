@@ -74,10 +74,29 @@ class RecordsController extends AppController {
 		}
 	}
 	
+	public function deleteRecord($id=null){
+		$this->Record->id = $id;
+		
+		if (!$this->Record->exists()) {
+			echo json_encode(array('response' => "El registro ya no existe."));
+			die();
+		}
+		
+		
+		if ($this->Record->delete()) {
+			echo json_encode(array('response' => "ok", 'message' => "El registro se elimino correctamente."));
+			die();
+		} else {
+			echo json_encode(array('response' => "Hubo un error al intentar eliminar el registro."));
+			die();
+		}		
+	}
+
+
 	public function listRecords(){
 		if ($this->request->is('post')) {
-			$records = $this->User->find('all', array(
-				'conditions' => array('User.id' => $this->Session->read('userid'))
+			$records = $this->Record->find('all',array(
+				'order' => array('Record.created')
 			));
 
 			$this->set(compact('records'));
