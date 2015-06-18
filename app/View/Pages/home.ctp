@@ -1,37 +1,26 @@
 <script type="text/javascript">
 	// Invoking the Login Dialog with the JavaScript SDK
-		function loginFb() {
-			FB.login(function(response) {
-				if (response.status === 'connected') {
-					// Logged into your app and Facebook.
-					loginAPI();
-				} else if (response.status === 'not_authorized') {
-					// The person is logged into Facebook, but not your app.
-					alert('Please log into this app.');
-					location.reload();
-				} else {
-					// The person is not logged into Facebook, so we're not sure if
-					// they are logged into this app or not.
-					alert('Please log into Facebook.');
-					location.reload();
-				}
-			}, {scope: 'public_profile,email'});
-		}
-		
-		function registerFb() {
-			var pass = document.getElementById("user-pass").value;
+		//Funcion para verificar si ya estamos logeados en Facebook
+		function verifiedFb(request) {			
+			if(request == 'register'){
+				var pass = document.getElementById("user-pass").value;
 
-			if (pass == "") {
-				$(function() {
-					alert('Porporciónanos el password con el que ingresaras al panel del Administrador Nurum.');										
-				});
-				return false;
+				if (pass == "") {
+					$(function() {
+						alert('Porporciónanos el password con el que ingresaras al panel del Administrador Nurum.');										
+					});
+					return false;
+				}
 			}
 
 			FB.login(function(response) {
 				if (response.status === 'connected') {
 					// Logged into your app and Facebook.
-					registerAPI();
+					if(request == 'register'){
+						registerAPI();
+					}else{
+						loginAPI();
+					}
 				} else if (response.status === 'not_authorized') {
 					// The person is logged into Facebook, but not your app.
 					console.log('Please log into this app.');
@@ -45,7 +34,7 @@
 			}, {scope: 'public_profile,email'});
 		}
 		
-
+		//Inicializamos la llamda ascincrona al Api de Facebook
 		window.fbAsyncInit = function() {
 		  FB.init({
 			appId      : '938196706223260',
@@ -64,7 +53,7 @@
 		   fjs.parentNode.insertBefore(js, fjs);
 		 }(document, 'script', 'facebook-jssdk'));
 		 
-		 
+		//Login de Facebook 
 		function loginAPI() {			
 			FB.api('/me', function(response) {
 			  $(function() {
@@ -85,7 +74,7 @@
 								document.location.href = data['redirect'];
 							}else{
 								alert(data['response']);
-								location.reload();
+								$('.register').delay(3000).click();
 							}
 						}
 					});
@@ -94,7 +83,9 @@
 			  });
 			});
 		}
-		 
+		
+		
+		//Registro con Facebook
 		function registerAPI() {
 			FB.api('/me', function(response) {
 				$(function() {
@@ -128,7 +119,36 @@
 					return false;
 				});
 			});
-		}		
+		}
+		
+		$(document).ready(function(){
+			$('#btn-login').click(function(){
+				var url = $('#loginform').attr('action');
+				var form = $('#loginform').serialize();
+				var btn = $(this);
+				btn.button('loading');
+				
+				
+
+				$.ajax({
+					type: "POST",
+					dataType: 'json',
+					url: url,
+					data: form,
+					success: function(data) {
+						if(data['message'] == 'Ok'){
+							location.reload();						
+						}else{
+							alert(data['response']);
+						}
+					}
+				}).always(function() {
+					btn.button('reset')
+				});
+
+				return false;
+			});
+		});
 </script>
 <div class="container">    
 	<div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
@@ -142,20 +162,20 @@
 								
 						<div style="margin-bottom: 25px" class="input-group">
 							<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-							<input id="login-username" type="text" class="form-control" name="username" value="" placeholder="username or email">                                        
+							<input id="login-username" type="text" class="form-control" name="data[User][email]" value="" placeholder="username or email">                                        
 						</div>
 							
 						<div style="margin-bottom: 25px" class="input-group">
 							<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-							<input id="login-password" type="password" class="form-control" name="password" placeholder="password">
+							<input id="login-password" type="password" class="form-control" name="data[User][password]" placeholder="password">
 						</div>                                    					
 						
 						<div style="margin-top:10px" class="form-group">
 							<!-- Button -->
 							<div class="col-sm-12 controls">
-							  <a id="btn-login" href="#" class="btn btn-success">Login  </a>
+							  <a id="btn-login" href="#" class="btn btn-success"  data-loading-text="logging...">Login  </a>
 							  <span style="margin-left:8px;margin-right:8px;">or</span>  
-							<button id="btn-fblogin" type="button" class="btn btn-primary" onclick="loginFb();"><i class="icon-facebook"></i>   Login with Facebook</button>
+							<button id="btn-fblogin" type="button" class="btn btn-primary" onclick="verifiedFb('login');"><i class="icon-facebook"></i>   Login with Facebook</button>
 							</div>
 						</div>
 						
@@ -163,12 +183,13 @@
 							<div class="col-md-12 control">
 								<div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
 									Don't have an account! 
-								<a href="#" onClick="$('#loginbox').hide(); $('#signupbox').show()">
+								<a href="#" class="register" onClick="$('#loginbox').hide(); $('#signupbox').show()">
 									Sign Up Here
 								</a>
 								</div>
 							</div>
-						</div>    
+						</div>  
+						<input type="hidden" name="login" value="true">
 					</form>     
 				</div>                     
 			</div>  
@@ -225,7 +246,7 @@
 						<div class="col-md-offset-3 col-md-9">
 							<button id="btn-signup" type="button" class="btn btn-info"><i class="icon-hand-right"></i> &nbsp Sign Up</button>
 							<span style="margin-left:8px;margin-right:8px;">or</span>  
-							<button id="btn-fbsignup" type="button" class="btn btn-primary" onclick="registerFb();"><i class="icon-facebook"></i>   Sign Up with Facebook</button>
+							<button id="btn-fbsignup" type="button" class="btn btn-primary" onclick="verifiedFb('register');"><i class="icon-facebook"></i>   Sign Up with Facebook</button>
 						</div>   
 					</div>                                                                                                
 				</form>

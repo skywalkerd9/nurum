@@ -50,12 +50,23 @@ class UsersController extends AppController {
 	
 	
 	public function login(){
-		if ($this->request->is('post')) {			
+		if ($this->request->is('post')) {	
 			$user = $this->User->find('first', array(
 				'conditions' => array('User.username' => $this->data['User']['email'])
 			));
 			
 			if (!empty($user)) {
+				if(isset($this->data['login'])){
+					$check_user = $this->User->find('first', array('conditions' => array('AND' => array('username' => $this->data['User']['email'], 'password' => AuthComponent::password($this->data['User']['password']), 'active' => 1))));	
+					
+					if(empty($check_user)){
+						echo json_encode(array('response' => "Error al inicar sesión. Verífica tus datos."));
+						die();
+					}
+				}
+				
+				
+				
 				if ($this->Auth->login($user)) {
 				   echo json_encode(array('response' => "ok", 'redirect' => $this->Auth->redirectUrl()));
 				   die();
@@ -85,7 +96,14 @@ class UsersController extends AppController {
 			die();
 		} 
 		
-		$this->request->data['User']['password'] = AuthComponent::password($user['User']['password']);		
+		$this->request->data['User']['username'] = $this->request->data['User']['email'];
+		$this->request->data['User']['first_name'] = $this->request->data['User']['name'];;
+		$this->request->data['User']['user_group_id'] = 2;
+		$this->request->data['User']['remember'] = 1;
+		$this->request->data['User']['email_verified'] = 1;
+		$this->request->data['User']['active'] = 1;
+		$this->request->data['User']['salt'] = $this->makeSalt();;
+		$this->request->data['User']['password'] = AuthComponent::password($this->request->data['User']['password']);		
 		
 		 if ($this->User->save($this->request->data)) {
 			$id = $this->User->id;
@@ -98,6 +116,13 @@ class UsersController extends AppController {
 			$this->Auth->login($this->request->data['User']);
 			
 			echo json_encode(array('response' => "ok", 'message' => "Gracias por registrarte con NURUM-ADMIN!", 'redirect' => $this->Auth->redirectUrl()));
+			die();
 		}
+	}
+	
+	public function makeSalt() {
+		$rand = mt_rand(0, 32);
+		$salt = md5($rand . time());
+		return $salt;
 	}
 }
