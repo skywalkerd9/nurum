@@ -140,6 +140,7 @@
 							location.reload();						
 						}else{
 							alert(data['response']);
+							$('#login-password').val("");
 						}
 					}
 				}).always(function() {

@@ -36,7 +36,7 @@ class UsersController extends AppController {
  *
  * @var array
  */
-	public $components = array('Paginator', 'Session');
+	public $components = array('Paginator', 'Session', 'Cookie');
 	
 /**
  * BeforeFilter method
@@ -57,9 +57,20 @@ class UsersController extends AppController {
 			
 			if (!empty($user)) {
 				if(isset($this->data['login'])){
+					$try = $this->Cookie->read('try'); //número de intentos que ha realizado el usuario
+					$block = $this->Cookie->read('block_time'); //el tiempo que lleva bloqueado el usuario
+					
 					$check_user = $this->User->find('first', array('conditions' => array('AND' => array('username' => $this->data['User']['email'], 'password' => AuthComponent::password($this->data['User']['password']), 'active' => 1))));	
 					
 					if(empty($check_user)){
+						
+						switch ($try){
+							case 3:
+								break;
+							case 10:
+								break;
+						}
+						
 						echo json_encode(array('response' => "Error al inicar sesión. Verífica tus datos."));
 						die();
 					}
