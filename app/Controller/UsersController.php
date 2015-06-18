@@ -76,6 +76,17 @@ class UsersController extends AppController {
 	}
 
 	public function register(){
+		$user = $this->User->find('first', array(
+				'conditions' => array('User.username' => $this->data['User']['email'])
+		));
+		
+		if (!empty($user)) {
+			echo json_encode(array('response' => "Ya te encuentras registrado con nosotros. Inicia sesión con tu cuenta ".$this->data['User']['email']));
+			die();
+		} 
+		
+		$this->request->data['User']['password'] = AuthComponent::password($user['User']['password']);		
+		
 		 if ($this->User->save($this->request->data)) {
 			$id = $this->User->id;
 			$this->request->data['User'] = array_merge(
@@ -86,7 +97,7 @@ class UsersController extends AppController {
 			unset($this->request->data['User']['password']);
 			$this->Auth->login($this->request->data['User']);
 			
-			echo json_encode(array('response' => "ok", 'redirect' => $this->Auth->redirectUrl()));
+			echo json_encode(array('response' => "ok", 'message' => "Gracias por registrarte con NURUM-ADMIN!", 'redirect' => $this->Auth->redirectUrl()));
 		}
 	}
 }

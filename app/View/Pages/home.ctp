@@ -31,14 +31,16 @@
 			FB.login(function(response) {
 				if (response.status === 'connected') {
 					// Logged into your app and Facebook.
-					testAPI();
+					registerAPI();
 				} else if (response.status === 'not_authorized') {
 					// The person is logged into Facebook, but not your app.
 					console.log('Please log into this app.');
+					location.reload();
 				} else {
 					// The person is not logged into Facebook, so we're not sure if
 					// they are logged into this app or not.
 					console.log('Please log into Facebook.');
+					location.reload();
 				}
 			}, {scope: 'public_profile,email'});
 		}
@@ -61,8 +63,39 @@
 		   js.src = "//connect.facebook.net/en_US/sdk.js";
 		   fjs.parentNode.insertBefore(js, fjs);
 		 }(document, 'script', 'facebook-jssdk'));
+		 
+		 
+		function loginAPI() {			
+			FB.api('/me', function(response) {
+			  $(function() {
+					var url = '/Users/login';					
+					var email = response.email;					
+					var formData = new FormData();					
+					formData.append('data[User][email]', email);
 
-		function testAPI() {
+					$.ajax({
+						type: "POST",
+						dataType: 'json',
+						contentType: false,
+						processData: false,
+						url: url,
+						data: formData,
+						success: function(data) {
+							if (data['response'] == 'ok') {
+								document.location.href = data['redirect'];
+							}else{
+								alert(data['response']);
+								location.reload();
+							}
+						}
+					});
+
+					return false;
+			  });
+			});
+		}
+		 
+		function registerAPI() {
 			FB.api('/me', function(response) {
 				$(function() {
 					var url = '/Users/register';
@@ -84,8 +117,10 @@
 						success: function(data) {
 							if (data['response'] == 'ok') {
 								alert(data['message']);
+								document.location.href = data['redirect'];								
 							}else{
 								alert(data['response']);
+								location.reload();
 							}
 						}
 					});
@@ -93,36 +128,7 @@
 					return false;
 				});
 			});
-		}
-		
-		function loginAPI() {			
-			FB.api('/me', function(response) {
-			  $(function() {
-					var url = '/Users/login';					
-					var email = response.email;					
-					var formData = new FormData();					
-					formData.append('data[User][email]', email);
-
-					$.ajax({
-						type: "POST",
-						dataType: 'json',
-						contentType: false,
-						processData: false,
-						url: url,
-						data: formData,
-						success: function(data) {
-							if (data['response'] == 'ok') {
-								document.location.href = data['redirect'];
-							}else{
-								alert(data['response']);
-							}
-						}
-					});
-
-					return false;
-			  });
-			});
-		}
+		}		
 </script>
 <div class="container">    
 	<div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
