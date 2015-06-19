@@ -33,24 +33,15 @@ NOTA: descarga aquí tu entorno de Desarrollo PHP - https://www.apachefriends.or
 ## FB Connect
 * Para el uso de la aplicación FB Connect deberás crear tu usuario en esta página https://developers.facebook.com/, una vez creada tu cuenta y hayas creado la aplicación en el proceso de esta url, deberás dirijirte a la vista app->View->Pages->home.ctp y modificar las siguientes lines por las que se te muestren en la url:
 
-<script>
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId      : 'tu ID',
-      xfbml      : true,
-      version    : 'v2.3'
-    });
-  };
+  - 'window.fbAsyncInit = function() {
+      FB.init({
+        appId      : 'tu ID',
+        xfbml      : true,
+        version    : 'v2.3'
+      });
+    };'
 
-  (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "//connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
-</script>
-
+*Esto para que puedas hacer uso del registro y login de facebook.
 
 ## Contributing
 
